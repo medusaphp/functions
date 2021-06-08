@@ -1,0 +1,21 @@
+{
+  "name": "medusa/functions",
+  "authors": [
+    {
+      "name": "Pascal Schnell",
+      "email": "pascal.schnell@getmedusa.org"
+    }
+  ],
+  "description": "functions",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.4"
+  },
+  "autoload": {
+    "files": [
+      "src/http_functions.php",
+      "src/common_functions.php",
+      "src/array_functions.php"
+    ]
+  }
+}
