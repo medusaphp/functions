@@ -1,6 +1,8 @@
 <?php declare(strict_types = 1);
 namespace Medusa\Http;
 
+use Medusa\Http\Simple\MessageInterface;
+use function array_map;
 use function preg_match;
 
 /**
@@ -50,4 +52,9 @@ function ipv4Convert(string $ip): string {
  */
 function getUserAgent(): string {
     return $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+}
+
+function flushMessage(MessageInterface $message): void {
+    array_map('header', $message->getHeaders(true));
+    echo $message->getBody();
 }
