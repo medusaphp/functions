@@ -5,6 +5,7 @@ use Medusa\Http\Simple\MessageInterface;
 use function array_map;
 use function base64_decode;
 use function base64_encode;
+use function is_array;
 use function preg_match;
 use function rtrim;
 use function str_pad;
@@ -79,4 +80,29 @@ function base64UrlEncode(string $input): string {
  */
 function base64UrlDecode(string $input): string {
     return base64_decode(str_pad(strtr($input, '-_', '+/'), strlen($input) % 4, '=', STR_PAD_RIGHT));
+}
+
+/**
+ * Check if current or given request is SSL / HTTPS
+ * @param array|MessageInterface|null $message
+ * @return bool
+ */
+function isSsl(array|MessageInterface|null $message = null): bool {
+    if ($message === null) {
+        $haystack = $_SERVER;
+    } elseif (is_array($message)) {
+        $haystack = $message;
+    } else {
+        $headers = $message->getHeaders();
+        $haystack = [
+            'HTTP_SSL'     => $headers['Ssl'][0] ?? null,
+            'HTTP_X_HTTPS' => $headers['X-Https'][0] ?? null,
+            'HTTP_HTTPS'   => $headers['Https'][0] ?? null,
+
+        ];
+    }
+    return
+        (!empty($haystack['HTTP_SSL']) && $haystack['HTTP_SSL'] === 'true') ||
+        (!empty($haystack['HTTP_X_HTTPS']) && $haystack['HTTP_X_HTTPS'] === 'on') ||
+        (!empty($haystack['HTTP_HTTPS']) && $haystack['HTTP_HTTPS'] === 'on');
 }
