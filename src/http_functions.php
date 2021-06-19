@@ -3,7 +3,13 @@ namespace Medusa\Http;
 
 use Medusa\Http\Simple\MessageInterface;
 use function array_map;
+use function base64_decode;
+use function base64_encode;
 use function preg_match;
+use function rtrim;
+use function str_pad;
+use function strlen;
+use const STR_PAD_RIGHT;
 
 /**
  * Get remote addr
@@ -57,4 +63,20 @@ function getUserAgent(): string {
 function flushMessage(MessageInterface $message): void {
     array_map('header', $message->getHeaders(true));
     echo $message->getBody();
+}
+
+/**
+ * @param string $input
+ * @return string
+ */
+function base64UrlEncode(string $input): string {
+    return rtrim(strtr(base64_encode($input), '+/', '-_'), '=');
+}
+
+/**
+ * @param string $input
+ * @return string
+ */
+function base64UrlDecode(string $input): string {
+    return base64_decode(str_pad(strtr($input, '-_', '+/'), strlen($input) % 4, '=', STR_PAD_RIGHT));
 }
