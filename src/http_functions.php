@@ -5,6 +5,9 @@ use Medusa\Http\Simple\MessageInterface;
 use function array_map;
 use function base64_decode;
 use function base64_encode;
+use function explode;
+use function header_remove;
+use function headers_list;
 use function is_array;
 use function preg_match;
 use function rtrim;
@@ -105,4 +108,10 @@ function isSsl(array|MessageInterface|null $message = null): bool {
         (!empty($haystack['HTTP_SSL']) && $haystack['HTTP_SSL'] === 'true') ||
         (!empty($haystack['HTTP_X_HTTPS']) && $haystack['HTTP_X_HTTPS'] === 'on') ||
         (!empty($haystack['HTTP_HTTPS']) && $haystack['HTTP_HTTPS'] === 'on');
+}
+
+function removeAllHeaders(): void {
+    foreach (headers_list() as $header) {
+        header_remove(explode(':', $header, 2)[0]);
+    }
 }
