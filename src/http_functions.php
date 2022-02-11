@@ -115,3 +115,16 @@ function removeAllHeaders(): void {
         header_remove(explode(':', $header, 2)[0]);
     }
 }
+
+/**
+ * @param string $remoteAddress
+ * @param string $networkCIDR
+ * @return bool
+ */
+function isIpInNetwork(string $remoteAddress, string $networkCIDR): bool {
+    [$networkAddress, $CIDR] = explode('/', $networkCIDR);
+    $addressAsLong = ip2long($networkAddress);
+    $ipMask = ~((1 << (32 - $CIDR)) - 1);
+    $remoteAddressAsLong = ip2long($remoteAddress);
+    return $addressAsLong === ($remoteAddressAsLong & $ipMask);
+}
